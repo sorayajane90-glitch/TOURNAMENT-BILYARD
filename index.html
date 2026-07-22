@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tournament Billiard</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #071a12, #0d3b28);
+      color: white;
+      min-height: 100vh;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 38px;
+      color: #ffd700;
+      text-transform: uppercase;
+      text-shadow: 0 0 15px rgba(255,215,0,.5);
+    }
+
+    .subtitle {
+      color: #ccc;
+      margin-top: 8px;
+    }
+
+    .team-form {
+      background: rgba(255,255,255,.08);
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255,255,255,.15);
+    }
+
+    .team-form h2 {
+      color: #ffd700;
+      margin-bottom: 15px;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    input {
+      flex: 1;
+      min-width: 220px;
+      padding: 14px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 14px 22px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      background: #ffd700;
+      color: #111;
+    }
+
+    button:hover {
+      background: #fff;
+    }
+
+    .bracket-wrapper {
+      overflow-x: auto;
+      padding-bottom: 20px;
+    }
+
+    .bracket {
+      display: flex;
+      gap: 40px;
+      min-width: 1000px;
+      align-items: stretch;
+    }
+
+    .round {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .round-title {
+      text-align: center;
+      color: #ffd700;
+      font-size: 20px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .matches {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      flex: 1;
+      gap: 20px;
+    }
+
+    .match {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,.2);
+    }
+
+    .player {
+      padding: 13px;
+      background: rgba(0,0,0,.25);
+      border-bottom: 1px solid rgba(255,255,255,.15);
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .player:last-child {
+      border-bottom: none;
+    }
+
+    .player:hover {
+      background: rgba(255,215,0,.2);
+    }
+
+    .player.winner {
+      background: #ffd700;
+      color: #111;
+      font-weight: bold;
+    }
+
+    .final-match {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    .champion {
+      text-align: center;
+      margin-top: 35px;
+      padding: 25px;
+      background: linear-gradient(135deg, #ffd700, #ff9900);
+      color: #111;
+      border-radius: 15px;
+      display: none;
+    }
+
+    .champion h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .team-list {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    .team-item {
+      background: rgba(0,0,0,.25);
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    @media(max-width: 600px) {
+      body {
+        padding: 15px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>🎱 Billiard Tournament</h1>
+    <p class="subtitle">Sistem Gugur / Knockout Tournament</p>
+  </header>
+
+  <section class="team-form">
+    <h2>Daftar Nama Tim</h2>
+
+    <div class="input-area">
+      <input
+        type="text"
+        id="teamName"
+        placeholder="Masukkan nama tim / pemain"
+      >
+
+      <button onclick="addTeam()">
+        + Tambah Tim
+      </button>
+    </div>
+
+    <div id="teamList" class="team-list"></div>
+
+    <br>
+
+    <button onclick="generateTournament()">
+      🎯 Buat Tournament
+    </button>
+  </section>
+
+  <div class="bracket-wrapper">
+
+    <div class="bracket">
+
+      <!-- BABAK 1 -->
+      <div class="round">
+        <div class="round-title">Babak 1</div>
+
+        <div class="matches">
+
+          <div class="match">
+            <div class="player" onclick="selectWinner(this)">Tim 1</div>
+            <div class="player" onclick="selectWinner(this)">Tim 2</div>
+          </div>
+
+          <div class="match">
+            <div class="player" onclick="selectWinner(this)">Tim 3</div>
+            <div class="player" onclick="selectWinner(this)">Tim 4</div>
+          </div>
+
+          <div class="match">
+            <div class="player" onclick="selectWinner(this)">Tim 5</div>
+            <div class="player" onclick="selectWinner(this)">Tim 6</div>
+          </div>
+
+          <div class="match">
+            <div class="player" onclick="selectWinner(this)">Tim 7</div>
+            <div class="player" onclick="selectWinner(this)">Tim 8</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SEMIFINAL -->
+      <div class="round">
+        <div class="round-title">Semifinal</div>
+
+        <div class="matches">
+
+          <div class="match">
+            <div class="player" onclick="selectWinner(this)">Pemenang 1</div>
+            <div class="player" onclick="selectWinner(this)">Pemenang 2</div>
+          </div>
+
+          <div class="match">
+            <div class="player" onclick="selectWinner(this)">Pemenang 3</div>
+            <div class="player" onclick="selectWinner(this)">Pemenang 4</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FINAL -->
+      <div class="round">
+        <div class="round-title">Final</div>
+
+        <div class="matches">
+
+          <div class="match final-match">
+            <div class="player" onclick="selectWinner(this)">Finalis 1</div>
+            <div class="player" onclick="selectWinner(this)">Finalis 2</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="champion" class="champion">
+    <h2>🏆 JUARA TURNAMEN 🏆</h2>
+    <p id="championName">Belum ditentukan</p>
+  </div>
+
+</div>
+
+<script>
+
+let teams = [];
+
+function addTeam() {
+
+  const input = document.getElementById("teamName");
+  const name = input.value.trim();
+
+  if (name === "") {
+    alert("Masukkan nama tim terlebih dahulu!");
+    return;
+  }
+
+  teams.push(name);
+
+  input.value = "";
+
+  displayTeams();
+}
+
+function displayTeams() {
+
+  const list = document.getElementById("teamList");
+
+  list.innerHTML = "";
+
+  teams.forEach((team, index) => {
+
+    const div = document.createElement("div");
+
+    div.className = "team-item";
+
+    div.innerHTML =
+      "<strong>" + (index + 1) + ".</strong> " + team;
+
+    list.appendChild(div);
+
+  });
+
+}
+
+function generateTournament() {
+
+  if (teams.length < 2) {
+    alert("Minimal masukkan 2 tim!");
+    return;
+  }
+
+  const players = document.querySelectorAll(
+    ".round:first-child .player"
+  );
+
+  players.forEach((player, index) => {
+
+    if (teams[index]) {
+      player.textContent = teams[index];
+    } else {
+      player.textContent = "BYE";
+    }
+
+  });
+
+  alert(
+    "Tournament berhasil dibuat dengan " +
+    teams.length +
+    " tim!"
+  );
+
+}
+
+function selectWinner(element) {
+
+  const match = element.parentElement;
+
+  const players = match.querySelectorAll(".player");
+
+  players.forEach(player => {
+    player.classList.remove("winner");
+  });
+
+  element.classList.add("winner");
+
+}
+
+</script>
+
+</body>
+</html>
