@@ -1,441 +1,1357 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tournament Billiard RAINBOW</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800;9..144,900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+ :root{
+    --bg-base:#0a0d12;
+    --panel:rgba(16,20,28,0.86);
+    --panel-solid:#10141c;
+    --line: rgba(255,255,255,0.07);
+    --line-strong: rgba(255,255,255,0.15);
 
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #071a12, #0d3b28);
-      color: white;
-      min-height: 100vh;
-      padding: 30px;
-    }
+    --felt:#123d2e;
+    --felt-line: rgba(23,92,64,0.4);
 
-    .container {
-      max-width: 1200px;
-      margin: auto;
-    }
+    --gold:#c9a44c;
+    --gold-bright:#e8c874;
+    --gold-dim: rgba(201,164,76,0.14);
+    --gold-line: rgba(201,164,76,0.4);
 
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
+    --text-hi:#f7f6f1;
+    --text-mid:#b7bcc7;
+    --text-muted:#767c8a;
 
-    h1 {
-      font-size: 38px;
-      color: #ffd700;
-      text-transform: uppercase;
-      text-shadow: 0 0 15px rgba(255,215,0,.5);
-    }
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:9px;
+    --nav-h:74px;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family:'Inter', -apple-system, sans-serif;
+    color:var(--text-hi);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(201,164,76,0.08), transparent 60%),
+      linear-gradient(180deg, rgba(4,6,9,0.55), rgba(4,6,9,0.72)),
+      url('https://i.imgur.com/N4ngRsc.jpeg');
+    background-color:var(--bg-base);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    padding-bottom: calc(var(--nav-h) + 20px);
+  }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+  .serif{ font-family:'Fraunces', serif; }
+  ::-webkit-scrollbar{ height:6px; width:6px; }
+  ::-webkit-scrollbar-thumb{ background:rgba(201,164,76,0.3); border-radius:10px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+  button{ -webkit-tap-highlight-color:transparent; }
 
-    .subtitle {
-      color: #ccc;
-      margin-top: 8px;
-    }
+  /* ===== TOP MINI HEADER ===== */
+  .topbar{
+    position:sticky; top:0; z-index:60;
+    background:rgba(7,9,14,0.72);
+    backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--line);
+    padding:13px 14px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  }
+  .topbar-brand{ display:flex; align-items:center; gap:10px; margin:0 auto; }
+  .topbar-side{ width:40px; display:flex; }
+  .ball8{
+    width:29px; height:29px; min-width:29px; border-radius:50%;
+    background: radial-gradient(circle at 32% 28%, #3a3a3a 0%, #111214 55%, #050506 100%);
+    position:relative;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 0 16px 2px rgba(201,164,76,0.28);
+  }
+  .ball8::before{
+    content:''; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:14px; height:14px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #ffffff, #eceef1 55%, #d8dade 100%);
+  }
+  .ball8::after{
+    content:'8'; position:absolute; left:50%; top:50%; transform:translate(-50%,-56%);
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:8px; color:#0d0e11;
+  }
+  .topbar-title{ font-family:'Fraunces', serif; font-size:14.5px; font-weight:700; letter-spacing:2.5px; color:var(--text-hi); white-space:nowrap; }
+  .topbar-title span{ color:var(--gold-bright); }
 
-    .team-form {
-      background: rgba(255,255,255,.08);
-      padding: 25px;
-      border-radius: 15px;
-      margin-bottom: 30px;
-      border: 1px solid rgba(255,255,255,.15);
-    }
+  .burger-btn{
+    width:40px; height:40px; border-radius:11px;
+    background:rgba(255,255,255,0.05); border:1px solid var(--line-strong);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    color:var(--text-hi); font-size:16px;
+  }
+  .burger-btn:active{ transform:scale(0.94); }
 
-    .team-form h2 {
-      color: #ffd700;
-      margin-bottom: 15px;
-    }
+  /* ===== PAGE WRAP ===== */
+  .page{ display:none; max-width:900px; margin:0 auto; padding:18px 16px 10px; animation:fadeIn .25s ease; }
+  .page.active{ display:block; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
 
-    .input-area {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+  /* ===== HERO (home) ===== */
+  .hero{ text-align:center; padding:10px 4px 4px; }
+  .hero-eyebrow{ font-size:11px; letter-spacing:5px; color:var(--gold-bright); font-weight:600; text-transform:uppercase; text-shadow:0 2px 8px rgba(0,0,0,0.6); }
+  .hero-title{
+    font-family:'Fraunces', serif; font-size:clamp(32px,10.5vw,50px); font-weight:700; letter-spacing:0.5px; line-height:1.02;
+    margin:6px 0 16px; color:var(--text-hi);
+    text-shadow:0 4px 22px rgba(0,0,0,0.55);
+  }
+  .hero-title em{ font-style:italic; color:var(--gold-bright); }
 
-    input {
-      flex: 1;
-      min-width: 220px;
-      padding: 14px;
-      border-radius: 8px;
-      border: none;
-      outline: none;
-      font-size: 16px;
-    }
+  /* --- Banner image with diamond rail accents --- */
+  .hero-banner{ position:relative; margin-bottom:16px; }
+  .hero-banner-frame{
+    position:relative; border-radius:16px; overflow:hidden;
+    border:1px solid var(--gold-line);
+    box-shadow:0 14px 34px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.03);
+  }
+  .hero-banner-frame img{ width:100%; display:block; aspect-ratio:16/10; object-fit:cover; }
+  .hero-banner-caption{
+    position:absolute; left:0; right:0; bottom:0;
+    background:linear-gradient(0deg, rgba(4,6,9,0.92) 5%, rgba(4,6,9,0.55) 55%, transparent 100%);
+    padding:26px 16px 14px; text-align:left;
+  }
+  .hero-banner-caption .sub{ font-size:10px; letter-spacing:2px; font-weight:700; color:var(--gold-bright); text-transform:uppercase; }
+  .hero-banner-caption .main{ font-size:13.5px; font-weight:600; color:var(--text-hi); margin-top:4px; letter-spacing:0.2px; }
+  /* diamond rail sights, echoing pool table cushion markers */
+  .rail-diamond{
+    position:absolute; width:9px; height:9px; background:var(--gold);
+    transform:rotate(45deg); box-shadow:0 0 8px rgba(201,164,76,0.6); z-index:2;
+  }
+  .rail-diamond.tl{ top:-5px; left:22px; }
+  .rail-diamond.tr{ top:-5px; right:22px; }
+  .rail-diamond.bl{ bottom:-5px; left:22px; }
+  .rail-diamond.br{ bottom:-5px; right:22px; }
 
-    button {
-      padding: 14px 22px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      background: #ffd700;
-      color: #111;
-    }
+  .chips{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-bottom:22px; }
+  .chip{
+    display:flex; align-items:center; gap:6px;
+    font-size:10.5px; font-weight:700; letter-spacing:0.8px; color:var(--text-mid); text-transform:uppercase;
+    background:rgba(255,255,255,0.04); border:1px solid var(--line-strong);
+    padding:7px 13px; border-radius:999px; backdrop-filter:blur(6px);
+  }
+  .chip i{ font-size:10px; color:var(--gold); }
+  .chip.gold{ background:var(--gold-dim); border-color:var(--gold-line); color:var(--gold-bright); }
+  .chip.gold i{ color:var(--gold-bright); }
 
-    button:hover {
-      background: #fff;
-    }
+  /* --- Home sponsor strip --- */
+  .home-sponsors{ margin-bottom:20px; }
+  .home-sponsors-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .hsh-title{ display:flex; align-items:center; gap:8px; font-size:10.5px; font-weight:700; letter-spacing:1.8px; color:var(--text-muted); text-transform:uppercase; }
+  .hsh-title i{ color:var(--gold); font-size:11px; }
+  .hsh-link{ font-size:10.5px; font-weight:700; letter-spacing:0.3px; color:var(--gold-bright); cursor:pointer; }
+  .sponsor-strip{ display:grid; grid-template-columns:repeat(2,1fr); gap:9px; }
+  @media(min-width:480px){ .sponsor-strip{ grid-template-columns:repeat(3,1fr); } }
+  .sponsor-badge{
+    display:flex; align-items:center; gap:9px;
+    background:linear-gradient(160deg, rgba(201,164,76,0.09), var(--panel));
+    border:1px solid var(--gold-line); border-radius:12px; padding:10px 11px;
+    backdrop-filter:blur(8px); overflow:hidden;
+  }
+  .sponsor-badge .sb-icon{
+    width:30px; height:30px; min-width:30px; border-radius:8px; overflow:hidden;
+    background:var(--gold-dim); border:1px solid var(--gold-line);
+    display:flex; align-items:center; justify-content:center; color:var(--gold-bright); font-size:12px;
+  }
+  .sponsor-badge .sb-icon img{ width:100%; height:100%; object-fit:cover; }
+  .sponsor-badge .sb-name{ font-size:10.8px; font-weight:700; color:var(--text-hi); line-height:1.25; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
-    .bracket-wrapper {
-      overflow-x: auto;
-      padding-bottom: 20px;
-    }
+  .quick-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px; }
+  .quick-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-lg);
+    padding:20px 14px; text-align:center; cursor:pointer; backdrop-filter:blur(10px);
+    transition:border-color .15s ease;
+  }
+  .quick-card:active{ transform:scale(0.97); }
+  .quick-card .qi{
+    width:44px; height:44px; margin:0 auto 10px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center; font-size:18px;
+    background:linear-gradient(155deg, rgba(201,164,76,0.18), rgba(201,164,76,0.05));
+    border:1px solid var(--gold-line); color:var(--gold-bright);
+  }
+  .quick-card .qt{ font-size:13px; font-weight:700; letter-spacing:0.2px; }
+  .quick-card .qs{ font-size:10.5px; color:var(--text-muted); margin-top:3px; }
 
-    .bracket {
-      display: flex;
-      gap: 40px;
-      min-width: 1000px;
-      align-items: stretch;
-    }
+  /* --- Tracker card --- */
+  .tracker-card{
+    margin-top:18px; background:var(--panel); border:1px solid var(--line);
+    border-radius:var(--radius-lg); padding:18px 16px 16px; backdrop-filter:blur(10px);
+  }
+  .tracker-head{ display:flex; align-items:center; gap:8px; font-size:10.5px; font-weight:700; letter-spacing:1.8px; color:var(--text-muted); text-transform:uppercase; margin-bottom:6px; }
+  .tracker-head i{ color:var(--gold); font-size:11px; }
+  .tracker-value{ font-family:'Fraunces', serif; font-size:19px; font-weight:600; color:var(--gold-bright); margin-bottom:16px; }
+  .stage-track{ display:flex; align-items:flex-start; overflow-x:auto; gap:0; padding-bottom:2px; }
+  .stage-step{ flex:1; min-width:64px; display:flex; flex-direction:column; align-items:center; position:relative; }
+  .stage-step .stage-line{ position:absolute; top:15px; left:-50%; width:100%; height:2px; background:var(--line-strong); z-index:0; }
+  .stage-step:first-child .stage-line{ display:none; }
+  .stage-step.completed .stage-line, .stage-step.active .stage-line{ background:var(--gold); }
+  .stage-dot{
+    width:30px; height:30px; border-radius:50%; background:var(--panel-solid);
+    border:2px solid var(--line-strong); display:flex; align-items:center; justify-content:center;
+    font-size:11px; color:var(--text-muted); position:relative; z-index:1;
+  }
+  .stage-step.completed .stage-dot{ background:var(--gold); border-color:var(--gold); color:#1a1400; }
+  .stage-step.active .stage-dot{ border-color:var(--gold); color:var(--gold-bright); box-shadow:0 0 0 4px var(--gold-dim); }
+  .stage-label{ font-size:9px; font-weight:700; color:var(--text-muted); text-align:center; margin-top:7px; letter-spacing:0.3px; line-height:1.25; }
+  .stage-step.active .stage-label{ color:var(--gold-bright); }
+  .stage-step.completed .stage-label{ color:var(--text-mid); }
 
-    .round {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
+  /* --- Champion status card --- */
+  .status-banner{
+    margin-top:14px; background:linear-gradient(160deg, rgba(201,164,76,0.1), var(--panel));
+    border:1px solid var(--gold-line);
+    border-radius:var(--radius-lg); padding:16px 18px; display:flex; align-items:center; gap:14px;
+    backdrop-filter:blur(10px);
+  }
+  .status-banner .si{
+    width:46px; height:46px; min-width:46px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    background:var(--gold-dim); border:1px solid var(--gold-line); color:var(--gold-bright); font-size:19px;
+  }
+  .status-banner .st{ font-size:10.5px; color:var(--text-muted); font-weight:700; letter-spacing:1.5px; text-transform:uppercase; }
+  .status-banner .sv{ font-family:'Fraunces', serif; font-size:17px; font-weight:600; color:var(--gold-bright); margin-top:3px; }
 
-    .round-title {
-      text-align: center;
-      color: #ffd700;
-      font-size: 20px;
-      margin-bottom: 20px;
-      font-weight: bold;
-    }
+  /* ===== SECTION LABEL ===== */
+  .page-title{ font-family:'Fraunces', serif; font-size:22px; font-weight:600; margin:0 0 4px; text-shadow:0 2px 10px rgba(0,0,0,0.5); }
+  .page-sub{ font-size:12.5px; color:var(--text-mid); margin:0 0 18px; text-shadow:0 2px 8px rgba(0,0,0,0.5); }
+  .section-rule{ height:2px; width:38px; background:linear-gradient(90deg, var(--gold), var(--felt)); border-radius:2px; margin:0 0 18px; }
 
-    .matches {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      flex: 1;
-      gap: 20px;
-    }
+  /* ===== BAGAN (IMAGE) PAGE ===== */
+  .bracket-image-wrap{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-lg);
+    padding:10px; overflow:auto; cursor:zoom-in; backdrop-filter:blur(10px);
+  }
+  .bracket-image-wrap img{ width:100%; display:block; border-radius:10px; }
+  .zoom-hint{ text-align:center; font-size:11px; color:var(--text-mid); margin-top:10px; display:flex; align-items:center; justify-content:center; gap:6px; }
+  .zoom-hint i{ font-size:10px; color:var(--gold); }
 
-    .match {
-      background: rgba(255,255,255,.1);
-      border: 1px solid rgba(255,255,255,.2);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0,0,0,.2);
-    }
+  .lightbox{
+    position:fixed; inset:0; background:rgba(4,6,9,0.95); z-index:200;
+    display:none; align-items:center; justify-content:center; padding:14px;
+  }
+  .lightbox.open{ display:flex; }
+  .lightbox img{ max-width:100%; max-height:100%; touch-action:pinch-zoom; border-radius:8px; }
+  .lightbox-close{
+    position:fixed; top:16px; right:16px; width:40px; height:40px; border-radius:50%;
+    background:rgba(255,255,255,0.1); border:1px solid var(--line-strong); color:#fff;
+    font-size:15px; display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
 
-    .player {
-      padding: 13px;
-      background: rgba(0,0,0,.25);
-      border-bottom: 1px solid rgba(255,255,255,.15);
-      cursor: pointer;
-      transition: .2s;
-    }
+  /* ===== PARTICIPANTS PAGE ===== */
+  .participant-list{ display:flex; flex-direction:column; gap:8px; }
+  .participant-row{ display:flex; align-items:center; gap:10px; }
+  .participant-row .pnum{
+    width:32px; min-width:32px; text-align:center; font-family:'JetBrains Mono',monospace;
+    font-size:11px; color:var(--gold); font-weight:700;
+    background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px 0;
+  }
+  .participant-row input{
+    flex:1; background:var(--panel); border:1px solid var(--line-strong); border-radius:var(--radius-sm);
+    padding:11px 12px; color:var(--text-hi); font-size:13.5px; outline:none; font-family:'Inter', sans-serif;
+  }
+  .participant-row input:focus{ border-color:var(--gold); }
+  .save-row{ margin-top:16px; display:flex; gap:10px; }
 
-    .player:last-child {
-      border-bottom: none;
-    }
+  /* ===== SCORES PAGE ===== */
+  .round-block{ margin-bottom:22px; }
+  .round-block-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .round-block-head h3{ margin:0; font-size:12.5px; letter-spacing:1.8px; text-transform:uppercase; color:var(--gold-bright); font-weight:700; display:flex; align-items:center; gap:8px; }
+  .round-block-head h3 i{ font-size:12px; }
+  .round-block-head span{ font-size:10.5px; color:var(--text-mid); font-weight:700; }
 
-    .player:hover {
-      background: rgba(255,215,0,.2);
-    }
+  .bracket-match{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-md);
+    overflow:hidden; cursor:pointer; margin-bottom:9px; transition:transform .1s ease; backdrop-filter:blur(10px);
+  }
+  .bracket-match:active{ transform:scale(0.985); }
+  .bracket-match.disabled{ cursor:default; opacity:0.5; }
+  .bracket-match.completed{ border-color:var(--gold-line); }
+  .bm-team{ display:flex; align-items:center; justify-content:space-between; padding:11px 13px; gap:8px; }
+  .bm-team + .bm-team{ border-top:1px solid var(--line); }
+  .bm-name{ font-size:13px; font-weight:600; color:var(--text-mid); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .bm-team.tbd .bm-name{ color:var(--text-muted); font-style:italic; }
+  .bm-team.winner .bm-name{ color:var(--text-hi); font-weight:800; }
+  .bm-score{ min-width:24px; text-align:center; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:14px; color:var(--text-muted); }
+  .bm-team.winner .bm-score{ color:var(--gold-bright); }
 
-    .player.winner {
-      background: #ffd700;
-      color: #111;
-      font-weight: bold;
-    }
+  /* ===== CHAMPION PAGE ===== */
+  .champion-wrap{ text-align:center; padding:34px 10px; }
+  .trophy-icon-big{
+    width:88px; height:88px; margin:0 auto 16px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:36px; color:var(--gold-bright);
+    background:radial-gradient(circle, rgba(201,164,76,0.18), transparent 70%);
+    border:1px solid var(--gold-line);
+  }
+  .trophy-label{ font-size:11.5px; letter-spacing:3.5px; color:var(--text-mid); font-weight:700; margin-bottom:10px; text-transform:uppercase; }
+  .trophy-name-big{ font-family:'Fraunces', serif; font-size:28px; font-weight:600; color:var(--gold-bright); min-height:36px; }
+  .trophy-empty{ font-size:13.5px; color:var(--text-mid); margin-top:12px; }
 
-    .final-match {
-      margin-top: auto;
-      margin-bottom: auto;
-    }
+  /* ===== RULES PAGE ===== */
+  .info-panel{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-lg); padding:16px 18px; backdrop-filter:blur(10px); margin-bottom:14px; }
+  .info-panel h3{ margin:0 0 12px; font-size:11.5px; letter-spacing:2px; text-transform:uppercase; color:var(--gold-bright); font-weight:700; display:flex; align-items:center; gap:8px; }
+  .info-panel ul{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .info-panel li{ font-size:13.5px; color:var(--text-mid); display:flex; gap:9px; align-items:flex-start; }
+  .info-panel li i{ color:var(--gold); font-size:11px; margin-top:4px; }
 
-    .champion {
-      text-align: center;
-      margin-top: 35px;
-      padding: 25px;
-      background: linear-gradient(135deg, #ffd700, #ff9900);
-      color: #111;
-      border-radius: 15px;
-      display: none;
-    }
+  /* --- Numbered official rules --- */
+  .rules-list{ display:flex; flex-direction:column; gap:12px; }
+  .rule-item{ display:flex; gap:13px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-lg); padding:15px 16px; backdrop-filter:blur(10px); }
+  .rule-item .ri-num{
+    width:32px; height:32px; min-width:32px; border-radius:10px;
+    background:var(--gold-dim); border:1px solid var(--gold-line); color:var(--gold-bright);
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:12.5px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .rule-item .ri-body{ flex:1; min-width:0; }
+  .rule-item .ri-body .ri-title{ font-size:13px; font-weight:800; color:var(--text-hi); margin-bottom:5px; display:flex; align-items:center; gap:7px; }
+  .rule-item .ri-body .ri-title i{ color:var(--gold); font-size:11.5px; }
+  .rule-item .ri-body .ri-desc{ font-size:12.5px; color:var(--text-mid); line-height:1.6; }
+  .rule-item .ri-body .ri-desc strong{ color:var(--text-hi); font-weight:700; }
+  .ri-sub{ margin:9px 0 0; padding-left:16px; }
+  .ri-sub li{ font-size:12px; color:var(--text-mid); margin-bottom:5px; line-height:1.5; }
+  .ri-sub li:last-child{ margin-bottom:0; }
 
-    .champion h2 {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
+  /* ===== SPONSOR / COMMITTEE CARDS ===== */
+  .people-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media(min-width:560px){ .people-grid{ grid-template-columns:1fr 1fr 1fr; } }
+  .people-card{
+    background:linear-gradient(160deg, rgba(201,164,76,0.06), var(--panel));
+    border:1px solid var(--line); border-radius:var(--radius-lg);
+    padding:18px 10px; text-align:center; backdrop-filter:blur(10px);
+    display:flex; flex-direction:column; align-items:center; gap:9px; position:relative;
+    transition:border-color .15s ease;
+  }
+  .people-card:hover{ border-color:var(--gold-line); }
+  .avatar{
+    width:64px; height:64px; border-radius:50%; overflow:hidden; cursor:pointer;
+    background:linear-gradient(135deg, rgba(201,164,76,0.2), rgba(18,61,46,0.35));
+    border:1px solid var(--gold-line);
+    display:flex; align-items:center; justify-content:center; position:relative;
+  }
+  .avatar img{ width:100%; height:100%; object-fit:cover; }
+  .avatar .avatar-icon{ font-size:19px; opacity:0.75; color:var(--text-mid); }
+  .avatar .avatar-edit{
+    position:absolute; bottom:-2px; right:-2px; width:22px; height:22px; border-radius:50%;
+    background:var(--gold); color:#1a1400; font-size:10px; display:flex; align-items:center; justify-content:center;
+    border:2px solid var(--panel-solid);
+  }
+  .people-card .pname{ font-size:12.5px; font-weight:700; color:var(--text-hi); line-height:1.3; }
+  .people-card .prole{ font-size:10.5px; color:var(--text-muted); font-weight:600; }
+  .people-card input.name-edit{
+    width:100%; text-align:center; background:transparent; border:none; border-bottom:1px dashed var(--line-strong);
+    color:var(--text-hi); font-size:12.5px; font-weight:700; padding:4px 2px; outline:none; font-family:'Inter', sans-serif;
+  }
+  .people-card input.name-edit:focus{ border-color:var(--gold); }
+  .people-card .remove-btn{
+    position:absolute; top:8px; right:8px; width:22px; height:22px; border-radius:50%;
+    background:rgba(220,90,90,0.14); border:1px solid rgba(220,90,90,0.35); color:#e08d8d;
+    font-size:10px; display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .add-person-btn{
+    background:var(--panel); border:1px dashed var(--line-strong); border-radius:var(--radius-lg);
+    padding:16px; text-align:center; cursor:pointer; color:var(--text-mid); font-size:12.5px; font-weight:700;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; min-height:154px;
+  }
+  .add-person-btn .qi{ font-size:20px; color:var(--gold); }
+  .add-person-btn:active{ transform:scale(0.97); }
 
-    .team-list {
-      margin-top: 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 10px;
-    }
+  .reset-row{ display:flex; justify-content:center; margin-top:24px; }
+  .reset-btn{
+    display:flex; align-items:center; gap:8px;
+    background:transparent; border:1px solid rgba(220,90,90,0.35); color:#e08d8d;
+    padding:10px 20px; border-radius:999px; font-size:12.5px; font-weight:700; cursor:pointer;
+    font-family:'Inter', sans-serif;
+  }
 
-    .team-item {
-      background: rgba(0,0,0,.25);
-      padding: 12px;
-      border-radius: 8px;
-    }
+  .btn{ display:flex; align-items:center; justify-content:center; gap:8px; padding:13px 16px; border-radius:var(--radius-md); border:none; font-weight:700; font-size:13.5px; cursor:pointer; font-family:'Inter', sans-serif; }
+  .btn:active{ transform:scale(0.98); }
+  .btn-primary{ background:linear-gradient(180deg,var(--gold-bright),var(--gold)); color:#1a1400; flex:1; }
+  .btn-ghost{ background:transparent; color:var(--text-mid); border:1px solid var(--line-strong); flex:1; }
 
-    @media(max-width: 600px) {
-      body {
-        padding: 15px;
-      }
+  /* ===== SCORE MODAL ===== */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(4,6,9,0.8);
+    backdrop-filter:blur(4px); display:none; align-items:flex-end; justify-content:center; z-index:150;
+  }
+  .modal-overlay.open{ display:flex; }
+  @media(min-width:640px){ .modal-overlay{ align-items:center; } }
+  .modal-box{
+    width:100%; max-width:420px; background:linear-gradient(180deg,#161b26,#0e1219);
+    border:1px solid var(--line-strong); border-radius:22px 22px 0 0; padding:22px 20px 26px;
+    animation:slideUp .2s ease; max-height:88vh; overflow-y:auto;
+  }
+  @media(min-width:640px){ .modal-box{ border-radius:18px; } }
+  @keyframes slideUp{ from{ transform:translateY(24px); opacity:0;} to{ transform:translateY(0); opacity:1;} }
+  .modal-title{ display:flex; align-items:center; gap:8px; font-size:10.5px; letter-spacing:2.2px; text-transform:uppercase; color:var(--gold-bright); font-weight:700; margin-bottom:5px; }
+  .modal-subtitle{ font-family:'Fraunces', serif; font-size:17px; font-weight:600; margin-bottom:18px; }
 
-      h1 {
-        font-size: 28px;
-      }
-    }
-  </style>
+  /* --- Generic info modal (prize / race-off) --- */
+  .info-modal-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+  .info-modal-row{ display:flex; align-items:flex-start; gap:12px; background:var(--panel-solid); border:1px solid var(--line); border-radius:var(--radius-md); padding:13px 14px; }
+  .info-modal-row.gold{ border-color:var(--gold-line); background:linear-gradient(160deg, rgba(201,164,76,0.12), var(--panel-solid)); }
+  .info-modal-row .imr-rank{
+    width:36px; height:36px; min-width:36px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px;
+    background:var(--gold-dim); border:1px solid var(--gold-line); color:var(--gold-bright);
+  }
+  .info-modal-row .imr-body .imr-title{ font-size:12.5px; font-weight:800; color:var(--text-hi); margin-bottom:4px; }
+  .info-modal-row .imr-body .imr-desc{ font-size:12px; color:var(--text-mid); line-height:1.5; }
+  .score-input-row{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px; margin-bottom:16px; }
+  .score-input-col{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .score-input-col label{ font-size:12px; font-weight:700; color:var(--text-mid); text-align:center; min-height:32px; display:flex; align-items:center; justify-content:center; }
+  .score-input-col input{
+    width:72px; height:60px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:700;
+    background:#05070c; color:var(--gold-bright); border:1px solid var(--line-strong); border-radius:var(--radius-md); outline:none;
+  }
+  .score-input-col input:focus{ border-color:var(--gold); box-shadow:0 0 0 3px var(--gold-dim); }
+  .vs-label{ color:var(--text-muted); font-weight:700; font-size:12.5px; letter-spacing:1px; }
+  .race-hint{ text-align:center; font-size:11.5px; color:var(--text-muted); margin-bottom:18px; }
+  .modal-actions{ display:flex; gap:10px; }
+
+  .toast{
+    position:fixed; left:50%; bottom:calc(var(--nav-h) + 14px); transform:translateX(-50%) translateY(20px);
+    background:#141a26; border:1px solid var(--gold-line); color:var(--text-hi);
+    padding:11px 20px; border-radius:999px; font-size:13px; font-weight:600;
+    opacity:0; pointer-events:none; transition:all .25s ease; z-index:250;
+    box-shadow:0 8px 24px rgba(0,0,0,0.4); max-width:88vw; text-align:center;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ===== BOTTOM NAV ===== */
+  .bottom-nav{
+    position:fixed; left:0; right:0; bottom:0; z-index:120;
+    height:var(--nav-h);
+    background:rgba(7,9,14,0.88);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-top:1px solid var(--line);
+    display:flex; align-items:stretch; justify-content:space-around;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .nav-btn{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:4px; background:none; border:none; color:var(--text-muted); cursor:pointer;
+    font-family:'Inter', sans-serif; padding:6px 2px;
+  }
+  .nav-btn .ni{ font-size:17px; line-height:1; }
+  .nav-btn .nt{ font-size:9.5px; font-weight:700; letter-spacing:0.3px; }
+  .nav-btn.active{ color:var(--gold-bright); }
+  .nav-btn.active .ni{ filter:drop-shadow(0 0 8px rgba(201,164,76,0.5)); }
+  .nav-btn:active{ opacity:0.7; }
+
+  /* ===== BURGER DRAWER ===== */
+  .drawer-overlay{
+    position:fixed; inset:0; background:rgba(4,6,9,0.6); z-index:180;
+    display:none; backdrop-filter:blur(3px);
+  }
+  .drawer-overlay.open{ display:block; }
+  .drawer{
+    position:fixed; top:0; right:0; bottom:0; width:78%; max-width:320px; z-index:190;
+    background:linear-gradient(180deg,#12172480,#0b0f19f2);
+    background-color:#0d1119; border-left:1px solid var(--line-strong);
+    transform:translateX(100%); transition:transform .25s ease;
+    display:flex; flex-direction:column; padding:20px 16px;
+  }
+  .drawer.open{ transform:translateX(0); }
+  .drawer-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .drawer-head .dt{ font-size:11.5px; letter-spacing:2.2px; font-weight:700; color:var(--gold-bright); text-transform:uppercase; }
+  .drawer-close{
+    width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.07); border:1px solid var(--line-strong);
+    color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px;
+  }
+  .drawer-item{
+    display:flex; align-items:center; gap:12px; padding:14px 12px; border-radius:var(--radius-md);
+    background:rgba(255,255,255,0.03); border:1px solid var(--line); margin-bottom:10px; cursor:pointer;
+  }
+  .drawer-item:active{ transform:scale(0.98); }
+  .drawer-item .di{ font-size:16px; color:var(--gold); width:20px; text-align:center; }
+  .drawer-item .dl{ font-size:13.5px; font-weight:700; color:var(--text-hi); }
+</style>
 </head>
-
 <body>
 
-<div class="container">
-
-  <header>
-    <h1>🎱 Billiard Tournament</h1>
-    <p class="subtitle">Sistem Gugur / Knockout Tournament</p>
-  </header>
-
-  <section class="team-form">
-    <h2>Daftar Nama Tim</h2>
-
-    <div class="input-area">
-      <input
-        type="text"
-        id="teamName"
-        placeholder="Masukkan nama tim / pemain"
-      >
-
-      <button onclick="addTeam()">
-        + Tambah Tim
-      </button>
+  <div class="topbar">
+    <div class="topbar-side"></div>
+    <div class="topbar-brand">
+      <div class="ball8"></div>
+      <span class="topbar-title">RAINBOW <span>SL</span></span>
     </div>
-
-    <div id="teamList" class="team-list"></div>
-
-    <br>
-
-    <button onclick="generateTournament()">
-      🎯 Buat Tournament
-    </button>
-  </section>
-
-  <div class="bracket-wrapper">
-
-    <div class="bracket">
-
-      <!-- BABAK 1 -->
-      <div class="round">
-        <div class="round-title">Babak 1</div>
-
-        <div class="matches">
-
-          <div class="match">
-            <div class="player" onclick="selectWinner(this)">Tim 1</div>
-            <div class="player" onclick="selectWinner(this)">Tim 2</div>
-          </div>
-
-          <div class="match">
-            <div class="player" onclick="selectWinner(this)">Tim 3</div>
-            <div class="player" onclick="selectWinner(this)">Tim 4</div>
-          </div>
-
-          <div class="match">
-            <div class="player" onclick="selectWinner(this)">Tim 5</div>
-            <div class="player" onclick="selectWinner(this)">Tim 6</div>
-          </div>
-
-          <div class="match">
-            <div class="player" onclick="selectWinner(this)">Tim 7</div>
-            <div class="player" onclick="selectWinner(this)">Tim 8</div>
-          </div>
-
-           <div class="match">
-            <div class="player" onclick="selectWinner(this)">Tim 9</div>
-            <div class="player" onclick="selectWinner(this)">Tim 10</div>
-          </div>
-
-           <div class="match">
-            <div class="player" onclick="selectWinner(this)">Tim 11</div>
-            <div class="player" onclick="selectWinner(this)">Tim 12</div>
-          </div>
-
-          <div class="match">
-            <div class="player" onclick="selectWinner(this)">Tim 13</div>
-            <div class="player" onclick="selectWinner(this)">Tim 14</div>
-          </div>
-
-          <div class="match">
-            <div class="player" onclick="selectWinner(this)">Tim 15</div>
-            <div class="player" onclick="selectWinner(this)">Tim 16</div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- 8 BESAR -->
-      <div class="round">
-        <div class="round-title">8 BESAR</div>
-
-        <div class="matches">
-
-          <div class="match">
-            <div class="player" onclick="selectWinner(this)">Pemenang 1</div>
-            <div class="player" onclick="selectWinner(this)">Pemenang 2</div>
-          </div>
-
-           <div class="match">
-            <div class="player" onclick="selectWinner(this)">Pemenang 3</div>
-            <div class="player" onclick="selectWinner(this)">Pemenang 4</div>
-          </div>
-
-          <div class="match">
-            <div class="player" onclick="selectWinner(this)">Pemenang 5</div>
-            <div class="player" onclick="selectWinner(this)">Pemenang 6</div>
-          </div>
-
-          <div class="match">
-            <div class="player" onclick="selectWinner(this)">Pemenang 7</div>
-            <div class="player" onclick="selectWinner(this)">Pemenang 8</div>
-          </div>
-
-        </div>
-      </div>
-      
-       <!-- SEMI FINAL -->
-      <div class="round">
-        <div class="round-title">SEMI FINAL</div>
-
-         <div class="match">
-            <div class="player" onclick="selectWinner(this)">Pemenang 1</div>
-            <div class="player" onclick="selectWinner(this)">Pemenang 2</div>
-          </div>
-
-         <div class="match">  
-            <div class="player" onclick="selectWinner(this)">Pemenang 3</div>
-            <div class="player" onclick="selectWinner(this)">Pemenang 4</div>
-          </div> 
-
-        </div>
-      </div>
-       
-  
-       <!-- FINAL -->
-      <div class="round">
-        <div class="round-title">FINAL</div>
-
-        <div class="matches">
-          
-            <div class="player" onclick="selectWinner(this)">FINAL 1</div>
-            <div class="player" onclick="selectWinner(this)">FINAL 2</div>
-          </div>
-
-        </div>
-      </div>
-
-  <div id="champion" class="champion">
-    <h2>🏆 JUARA TURNAMEN 🏆</h2>
-    <p id="championName">Belum ditentukan</p>
+    <div class="topbar-side" style="justify-content:flex-end;">
+      <div class="burger-btn" id="burgerBtn"><i class="fa-solid fa-bars"></i></div>
+    </div>
   </div>
 
-</div>
+  <!-- ===== PAGE: HOME ===== -->
+  <section class="page active" id="page-home">
+    <div class="hero">
+      <div class="hero-eyebrow">Turnamen Billiard</div>
+      <div class="hero-title">RAINBOW <em>SL</em></div>
+    </div>
+
+    <div class="hero-banner">
+      <div class="hero-banner-frame">
+        <span class="rail-diamond tl"></span><span class="rail-diamond tr"></span>
+        <span class="rail-diamond bl"></span><span class="rail-diamond br"></span>
+        <img src="https://i.imgur.com/8luxRCm.jpeg" alt="Banner Turnamen Rainbow SL">
+        <div class="hero-banner-caption">
+          <div class="sub">Turnamen Billiard Rainbow SL</div>
+          <div class="main">8 Ball · 32 Peserta / 16 Team — Sistem Gugur</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chips">
+      <span class="chip"><i class="fa-solid fa-circle-dot"></i>8 Ball</span>
+      <span class="chip"><i class="fa-solid fa-users"></i>32 Peserta</span>
+      <span class="chip"><i class="fa-solid fa-user-group"></i>16 Team</span>
+      <span class="chip"><i class="fa-solid fa-sitemap"></i>Sistem Gugur</span>
+      <span class="chip gold"><i class="fa-solid fa-flag-checkered"></i>Race to 2</span>
+    </div>
+
+    <div class="home-sponsors">
+      <div class="home-sponsors-head">
+        <span class="hsh-title"><i class="fa-solid fa-handshake"></i>Didukung Oleh Sponsor Official</span>
+        <span class="hsh-link" data-goto="sponsors">Lihat Semua</span>
+      </div>
+      <div class="sponsor-strip" id="homeSponsorStrip"></div>
+    </div>
+
+    <div class="quick-grid">
+      <div class="quick-card" data-goto="bracket">
+        <div class="qi"><i class="fa-solid fa-sitemap"></i></div>
+        <div class="qt">Bagan Turnamen</div>
+        <div class="qs">Lihat struktur bracket</div>
+      </div>
+      <div class="quick-card" data-goto="scores">
+        <div class="qi"><i class="fa-solid fa-clipboard-list"></i></div>
+        <div class="qt">Input Skor</div>
+        <div class="qs">Catat hasil pertandingan</div>
+      </div>
+      <div class="quick-card" data-goto="participants">
+        <div class="qi"><i class="fa-solid fa-users-gear"></i></div>
+        <div class="qt">Atur Peserta</div>
+        <div class="qs">Ubah 32 nama tim</div>
+      </div>
+      <div class="quick-card" data-goto="champion">
+        <div class="qi"><i class="fa-solid fa-trophy"></i></div>
+        <div class="qt">Juara</div>
+        <div class="qs">Lihat pemenang akhir</div>
+      </div>
+    </div>
+
+    <div class="tracker-card">
+      <div class="tracker-head"><i class="fa-solid fa-wave-square"></i>Status Turnamen Live</div>
+      <div class="tracker-value" id="trackerStageLabel">Belum Dimulai</div>
+      <div class="stage-track" id="stageTrack"></div>
+    </div>
+
+    <div class="status-banner">
+      <div class="si"><i class="fa-solid fa-crown"></i></div>
+      <div>
+        <div class="st">Status Juara Saat Ini</div>
+        <div class="sv" id="homeChampionStatus">Belum ditentukan</div>
+      </div>
+    </div>
+
+    <div class="reset-row">
+      <button class="reset-btn" id="resetBtn"><i class="fa-solid fa-rotate-left"></i>Reset Turnamen</button>
+    </div>
+  </section>
+
+  <!-- ===== PAGE: BAGAN (IMAGE) ===== -->
+  <section class="page" id="page-bracket">
+    <div class="page-title">Bagan Turnamen</div>
+    <div class="page-sub">Struktur bracket 32 peserta — sistem gugur, race to 2</div>
+    <div class="section-rule"></div>
+    <div class="bracket-image-wrap" id="bracketImgWrap">
+      <img src="https://i.imgur.com/9dstLbM.png" alt="Bagan Turnamen Billiard Rainbow SL">
+    </div>
+    <div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i>Ketuk gambar untuk memperbesar (pinch-to-zoom didukung)</div>
+  </section>
+
+  <!-- ===== PAGE: PARTICIPANTS ===== -->
+  <section class="page" id="page-participants">
+    <div class="page-title">Atur Peserta</div>
+    <div class="page-sub">Ubah nama 32 tim / pemain yang bertanding</div>
+    <div class="section-rule"></div>
+    <div class="participant-list" id="participantsList"></div>
+    <div class="save-row">
+      <button class="btn btn-primary" id="pSaveBtn"><i class="fa-solid fa-floppy-disk"></i>Simpan Semua Nama</button>
+    </div>
+  </section>
+
+  <!-- ===== PAGE: SCORES ===== -->
+  <section class="page" id="page-scores">
+    <div class="page-title">Input Skor Pertandingan</div>
+    <div class="page-sub">Ketuk kotak pertandingan untuk memasukkan hasil (race to 2)</div>
+    <div class="section-rule"></div>
+    <div id="scoresContainer"></div>
+  </section>
+
+  <!-- ===== PAGE: CHAMPION ===== -->
+  <section class="page" id="page-champion">
+    <div class="page-title">Juara Turnamen</div>
+    <div class="page-sub">Pemenang Grand Final akan tampil di sini</div>
+    <div class="section-rule"></div>
+    <div class="champion-wrap">
+      <div class="trophy-icon-big"><i class="fa-solid fa-trophy"></i></div>
+      <div class="trophy-label">Juara Rainbow SL</div>
+      <div class="trophy-name-big" id="championName">—</div>
+      <div class="trophy-empty" id="championEmptyNote">Selesaikan semua babak hingga Grand Final untuk menentukan juara.</div>
+    </div>
+  </section>
+
+  <!-- ===== PAGE: RULES ===== -->
+  <section class="page" id="page-rules">
+    <div class="page-title">Aturan Pertandingan</div>
+    <div class="page-sub">Peraturan dan ketentuan resmi turnamen Rainbow SL</div>
+    <div class="section-rule"></div>
+    <div class="rules-list">
+      <div class="rule-item">
+        <div class="ri-num">01</div>
+        <div class="ri-body">
+          <div class="ri-title"><i class="fa-solid fa-clock"></i>Kehadiran</div>
+          <div class="ri-desc">Wajib hadir pukul <strong>09.15 WIB</strong>. Jika pukul <strong>09.30 WIB</strong> belum hadir, pemain dinyatakan <strong>DISKUALIFIKASI</strong>.</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="ri-num">02</div>
+        <div class="ri-body">
+          <div class="ri-title"><i class="fa-solid fa-broom"></i>Kebersihan</div>
+          <div class="ri-desc">Setiap pemain wajib menjaga kebersihan Dapur MBG.</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="ri-num">03</div>
+        <div class="ri-body">
+          <div class="ri-title"><i class="fa-solid fa-sitemap"></i>Format Turnamen</div>
+          <ul class="ri-sub">
+            <li>Babak 16 Besar: Sistem Klasemen Grup (Poin menang terbanyak lolos ke 8 besar).</li>
+            <li>Babak 8 Besar s/d Final: Sistem Gugur (Single Elimination).</li>
+          </ul>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="ri-num">04</div>
+        <div class="ri-body">
+          <div class="ri-title"><i class="fa-solid fa-stopwatch"></i>Shot Clock</div>
+          <div class="ri-desc">Batas waktu membidik maksimal <strong>60 Detik / 1 Menit</strong>. Lewat waktu, giliran berlanjut ke lawan (bukan Foul/Freeball). Waktu diskusi tim maksimal 60 detik.</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="ri-num">05</div>
+        <div class="ri-body">
+          <div class="ri-title"><i class="fa-solid fa-circle-dot"></i>Break &amp; Bola 8</div>
+          <div class="ri-desc">Break diawali SUIT, selanjutnya oleh pemenang frame. Bola 8 dimasukkan terakhir setelah bola target habis. Breakshoot masuk Bola 8 dihitung <strong>POINT / WIN</strong>.</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="ri-num">06</div>
+        <div class="ri-body">
+          <div class="ri-title"><i class="fa-solid fa-triangle-exclamation"></i>Pelanggaran (Foul)</div>
+          <div class="ri-desc">Foul terjadi jika bola putih tidak kena target DAN tidak menyentuh BAN. Lawan mendapat <strong>FREEBALL</strong> (bebas peletakan bola putih). Foul 3x berturut-turut dihitung <strong>KALAH</strong> frame.</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="ri-num">07</div>
+        <div class="ri-body">
+          <div class="ri-title"><i class="fa-solid fa-ban"></i>Kalah Instan</div>
+          <div class="ri-desc">Bola 8 masuk sebelum bola lain habis = <strong>KALAH</strong>. Bola 8 keluar/melompat dari meja = <strong>KALAH</strong>.</div>
+        </div>
+      </div>
+      <div class="rule-item">
+        <div class="ri-num">08</div>
+        <div class="ri-body">
+          <div class="ri-title"><i class="fa-solid fa-toolbox"></i>Stik Biliar</div>
+          <div class="ri-desc">Lokasi menyediakan 2 PCS stik meja. Pemain diperbolehkan membawa stik pribadi.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PAGE: SPONSOR ===== -->
+  <section class="page" id="page-sponsors">
+    <div class="page-title">Sponsor Official</div>
+    <div class="page-sub">Terima kasih kepada seluruh sponsor Rainbow SL — ketuk foto untuk mengunggah logo/foto sponsor</div>
+    <div class="section-rule"></div>
+    <div class="people-grid" id="sponsorsGrid"></div>
+  </section>
+
+  <!-- ===== PAGE: COMMITTEE ===== -->
+  <section class="page" id="page-committee">
+    <div class="page-title">Pengurus / Penanggung Jawab</div>
+    <div class="page-sub">Susunan panitia &amp; penanggung jawab pertandingan — ketuk foto untuk unggah, ketuk nama untuk mengubah</div>
+    <div class="section-rule"></div>
+    <div class="people-grid" id="committeeGrid"></div>
+  </section>
+
+  <!-- ===== BOTTOM NAVIGATION ===== -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-page="home"><span class="ni"><i class="fa-solid fa-house"></i></span><span class="nt">Beranda</span></button>
+    <button class="nav-btn" data-page="bracket"><span class="ni"><i class="fa-solid fa-sitemap"></i></span><span class="nt">Bagan</span></button>
+    <button class="nav-btn" data-page="scores"><span class="ni"><i class="fa-solid fa-clipboard-list"></i></span><span class="nt">Skor</span></button>
+    <button class="nav-btn" data-page="participants"><span class="ni"><i class="fa-solid fa-users-gear"></i></span><span class="nt">Peserta</span></button>
+    <button class="nav-btn" data-page="champion"><span class="ni"><i class="fa-solid fa-trophy"></i></span><span class="nt">Juara</span></button>
+  </nav>
+
+  <!-- ===== BURGER DRAWER ===== -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-head">
+      <span class="dt">Menu Lainnya</span>
+      <div class="drawer-close" id="drawerClose"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+    <div class="drawer-item" data-goto="rules"><span class="di"><i class="fa-solid fa-scroll"></i></span><span class="dl">Aturan Pertandingan</span></div>
+    <div class="drawer-item" data-modal="prizeModal"><span class="di"><i class="fa-solid fa-trophy"></i></span><span class="dl">Hadiah Pemenang</span></div>
+    <div class="drawer-item" data-modal="raceoffModal"><span class="di"><i class="fa-solid fa-bolt"></i></span><span class="dl">Race Off</span></div>
+    <div class="drawer-item" data-goto="sponsors"><span class="di"><i class="fa-solid fa-handshake"></i></span><span class="dl">Sponsor</span></div>
+    <div class="drawer-item" data-goto="committee"><span class="di"><i class="fa-solid fa-user-tie"></i></span><span class="dl">Pengurus / Penanggung Jawab</span></div>
+  </div>
+
+  <!-- LIGHTBOX for bracket image -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-close" id="lightboxClose"><i class="fa-solid fa-xmark"></i></div>
+    <img src="https://i.imgur.com/9dstLbM.png" alt="Bagan Turnamen (perbesar)">
+  </div>
+
+  <!-- SCORE MODAL -->
+  <div class="modal-overlay" id="scoreModal">
+    <div class="modal-box">
+      <div class="modal-title" id="scModalRound">BABAK 32 BESAR</div>
+      <div class="modal-subtitle" id="scModalMatchLabel">Team 01 vs Team 02</div>
+      <div class="score-input-row">
+        <div class="score-input-col">
+          <label id="scLabel1">Team 01</label>
+          <input type="number" min="0" max="2" id="scInput1" inputmode="numeric" placeholder="0">
+        </div>
+        <div class="vs-label">VS</div>
+        <div class="score-input-col">
+          <label id="scLabel2">Team 02</label>
+          <input type="number" min="0" max="2" id="scInput2" inputmode="numeric" placeholder="0">
+        </div>
+      </div>
+      <div class="race-hint">Race to 2 — salah satu tim harus mencapai skor 2 untuk menang</div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="scCancel">Batal</button>
+        <button class="btn btn-primary" id="scSave"><i class="fa-solid fa-check"></i>Simpan Hasil</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HADIAH PEMENANG MODAL -->
+  <div class="modal-overlay" id="prizeModal">
+    <div class="modal-box">
+      <div class="modal-title"><i class="fa-solid fa-trophy"></i>Hadiah Pemenang Tournament</div>
+      <div class="modal-subtitle">Total Hadiah Rainbow SL</div>
+      <div class="info-modal-list">
+        <div class="info-modal-row gold">
+          <div class="imr-rank"><i class="fa-solid fa-trophy"></i></div>
+          <div class="imr-body">
+            <div class="imr-title">Juara 1</div>
+            <div class="imr-desc">200.000 LKR + Stick Billiard + Piala + Penghargaan</div>
+          </div>
+        </div>
+        <div class="info-modal-row">
+          <div class="imr-rank"><i class="fa-solid fa-medal"></i></div>
+          <div class="imr-body">
+            <div class="imr-title">Juara 2</div>
+            <div class="imr-desc">150.000 LKR + Stick Billiard + Piala + Penghargaan</div>
+          </div>
+        </div>
+        <div class="info-modal-row">
+          <div class="imr-rank"><i class="fa-solid fa-award"></i></div>
+          <div class="imr-body">
+            <div class="imr-title">Juara 3</div>
+            <div class="imr-desc">75.000 LKR + Stick Billiard + Piala + Penghargaan</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" data-close-modal="prizeModal">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RACE OFF MODAL -->
+  <div class="modal-overlay" id="raceoffModal">
+    <div class="modal-box">
+      <div class="modal-title"><i class="fa-solid fa-bolt"></i>Format Race Off Pertandingan</div>
+      <div class="modal-subtitle">Ketentuan Race Per Babak</div>
+      <div class="info-modal-list">
+        <div class="info-modal-row">
+          <div class="imr-rank">R2</div>
+          <div class="imr-body">
+            <div class="imr-title">Babak Penyisihan Grup</div>
+            <div class="imr-desc">Race to 2</div>
+          </div>
+        </div>
+        <div class="info-modal-row">
+          <div class="imr-rank">R3</div>
+          <div class="imr-body">
+            <div class="imr-title">8 Besar / Perempat Final</div>
+            <div class="imr-desc">Race to 3</div>
+          </div>
+        </div>
+        <div class="info-modal-row">
+          <div class="imr-rank">R4</div>
+          <div class="imr-body">
+            <div class="imr-title">4 Besar / Semi Final</div>
+            <div class="imr-desc">Race to 4</div>
+          </div>
+        </div>
+        <div class="info-modal-row gold">
+          <div class="imr-rank">R5</div>
+          <div class="imr-body">
+            <div class="imr-title">Laga Final</div>
+            <div class="imr-desc">Race to 5</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" data-close-modal="raceoffModal">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" accept="image/*" id="photoFileInput" style="display:none;">
+
+  <div class="toast" id="toast">Tersimpan</div>
 
 <script>
+(function(){
+  "use strict";
 
-let teams = [];
+  const STORAGE_KEY = "rainbow_sl_bracket_v4";
 
-function addTeam() {
+  const ROUND_DEFS = [
+    { key:'r32',  label:'Babak 32 Besar',            sub:'16 Pertandingan', matches:16, icon:'fa-users' },
+    { key:'r16',  label:'Babak 16 Besar',             sub:'8 Pertandingan',  matches:8,  icon:'fa-user-group' },
+    { key:'qf',   label:'Perempat Final (8 Besar)',   sub:'4 Pertandingan',  matches:4,  icon:'fa-chart-simple' },
+    { key:'sf',   label:'Semi Final (4 Besar)',       sub:'2 Pertandingan',  matches:2,  icon:'fa-fire' },
+    { key:'final',label:'Final (Grand Final)',        sub:'1 Pertandingan',  matches:1,  icon:'fa-flag-checkered' },
+  ];
+  const STAGE_SHORT_LABELS = ['32 Besar','16 Besar','8 Besar','Semi Final','Final'];
 
-  const input = document.getElementById("teamName");
-  const name = input.value.trim();
+  const SPONSOR_NAMES = [
+    "KO BOBY","KO ANDRE","KO BERNANDO","KO ROBERT","NINE PARFUM",
+    "JASTIP ANDRIAN","JASTIP CHITATO","CHITATO STORE","D LUCKY PERFUME","URBAN CLOUD"
+  ];
 
-  if (name === "") {
-    alert("Masukkan nama tim terlebih dahulu!");
-    return;
+  const DEFAULT_COMMITTEE = [
+    { name:"", role:"Penanggung Jawab Turnamen", photo:null },
+    { name:"", role:"Wasit Utama", photo:null },
+    { name:"", role:"Panitia Pelaksana", photo:null }
+  ];
+
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+
+  function buildDefaultTeams(){
+    const teams = [];
+    for(let i=1;i<=32;i++) teams.push('TEAM ' + pad(i));
+    return teams;
+  }
+  function buildDefaultRounds(){
+    return ROUND_DEFS.map(def => ({
+      matches: Array.from({length:def.matches}, () => ({ s1:null, s2:null }))
+    }));
+  }
+  function buildDefaultSponsors(){
+    return SPONSOR_NAMES.map(name => ({ name, photo:null }));
+  }
+  function buildDefaultCommittee(){
+    return DEFAULT_COMMITTEE.map(p => ({ ...p }));
+  }
+  function buildDefaultState(){
+    return {
+      teams: buildDefaultTeams(),
+      rounds: buildDefaultRounds(),
+      sponsors: buildDefaultSponsors(),
+      committee: buildDefaultCommittee()
+    };
   }
 
-  teams.push(name);
-
-  input.value = "";
-
-  displayTeams();
-}
-
-function displayTeams() {
-
-  const list = document.getElementById("teamList");
-
-  list.innerHTML = "";
-
-  teams.forEach((team, index) => {
-
-    const div = document.createElement("div");
-
-    div.className = "team-item";
-
-    div.innerHTML =
-      "<strong>" + (index + 1) + ".</strong> " + team;
-
-    list.appendChild(div);
-
-  });
-
-}
-
-function generateTournament() {
-
-  if (teams.length < 2) {
-    alert("Minimal masukkan 2 tim!");
-    return;
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return buildDefaultState();
+      const parsed = JSON.parse(raw);
+      if(!parsed || !Array.isArray(parsed.teams) || parsed.teams.length !== 32 || !Array.isArray(parsed.rounds) || parsed.rounds.length !== ROUND_DEFS.length){
+        return buildDefaultState();
+      }
+      if(!Array.isArray(parsed.sponsors) || parsed.sponsors.length !== SPONSOR_NAMES.length){
+        parsed.sponsors = buildDefaultSponsors();
+      }
+      if(!Array.isArray(parsed.committee)){
+        parsed.committee = buildDefaultCommittee();
+      }
+      return parsed;
+    }catch(e){ return buildDefaultState(); }
+  }
+  function saveState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){ showToast('Penyimpanan penuh — coba hapus beberapa foto'); }
   }
 
-  const players = document.querySelectorAll(
-    ".round:first-child .player"
-  );
+  let state = loadState();
 
-  players.forEach((player, index) => {
+  /* ===== BRACKET RESOLUTION LOGIC ===== */
+  function getMatchWinnerSlot(r, m){
+    const match = state.rounds[r].matches[m];
+    if(match.s1 === null || match.s2 === null || match.s1 === '' || match.s2 === '') return null;
+    const s1 = Number(match.s1), s2 = Number(match.s2);
+    if(Math.max(s1,s2) < 2) return null;
+    if(s1 === s2) return null;
+    return s1 > s2 ? 0 : 1;
+  }
+  function getTeamForSlot(r, m, slot){
+    if(r === 0){
+      const idx = m*2 + slot;
+      return { ready:true, name: state.teams[idx] };
+    }
+    const prevRound = r - 1;
+    const prevMatchIdx = m*2 + slot;
+    const winnerSlot = getMatchWinnerSlot(prevRound, prevMatchIdx);
+    if(winnerSlot === null) return { ready:false, name:'TBD' };
+    return getTeamForSlot(prevRound, prevMatchIdx, winnerSlot);
+  }
+  function isMatchPlayable(r, m){
+    const a = getTeamForSlot(r, m, 0);
+    const b = getTeamForSlot(r, m, 1);
+    return a.ready && b.ready;
+  }
+  function cascadeReset(r, m){
+    if(r + 1 >= state.rounds.length) return;
+    const nextMatchIdx = Math.floor(m/2);
+    const nextMatch = state.rounds[r+1].matches[nextMatchIdx];
+    if(nextMatch.s1 !== null || nextMatch.s2 !== null){
+      nextMatch.s1 = null; nextMatch.s2 = null;
+      cascadeReset(r+1, nextMatchIdx);
+    }
+  }
+  function getChampionName(){
+    const finalRound = ROUND_DEFS.length - 1;
+    const winnerSlot = getMatchWinnerSlot(finalRound, 0);
+    if(winnerSlot === null) return null;
+    return getTeamForSlot(finalRound, 0, winnerSlot).name;
+  }
+  function isRoundComplete(r){
+    for(let m=0; m<state.rounds[r].matches.length; m++){
+      if(getMatchWinnerSlot(r,m) === null) return false;
+    }
+    return true;
+  }
+  function getCurrentStage(){
+    if(getChampionName() !== null) return ROUND_DEFS.length;
+    for(let r=0; r<ROUND_DEFS.length; r++){
+      if(!isRoundComplete(r)) return r;
+    }
+    return ROUND_DEFS.length;
+  }
 
-    if (teams[index]) {
-      player.textContent = teams[index];
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, ch => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+    }[ch]));
+  }
+
+  /* ===== RENDER: STAGE TRACKER ===== */
+  function renderTracker(){
+    const stage = getCurrentStage();
+    const track = document.getElementById('stageTrack');
+    const label = document.getElementById('trackerStageLabel');
+
+    if(stage >= ROUND_DEFS.length){
+      label.textContent = 'Juara Ditemukan!';
     } else {
-      player.textContent = "BYE";
+      label.textContent = ROUND_DEFS[stage].label;
     }
 
+    track.innerHTML = '';
+    ROUND_DEFS.forEach((def, i) => {
+      let cls = 'stage-step';
+      if(i < stage) cls += ' completed';
+      else if(i === stage) cls += ' active';
+      const icon = i < stage ? 'fa-check' : def.icon;
+      const step = document.createElement('div');
+      step.className = cls;
+      step.innerHTML = `
+        <div class="stage-line"></div>
+        <div class="stage-dot"><i class="fa-solid ${icon}"></i></div>
+        <div class="stage-label">${STAGE_SHORT_LABELS[i]}</div>
+      `;
+      track.appendChild(step);
+    });
+    // trophy/champion final step
+    let champCls = 'stage-step';
+    if(stage >= ROUND_DEFS.length) champCls += ' completed';
+    const champStep = document.createElement('div');
+    champStep.className = champCls;
+    champStep.innerHTML = `
+      <div class="stage-line"></div>
+      <div class="stage-dot"><i class="fa-solid fa-crown"></i></div>
+      <div class="stage-label">Juara</div>
+    `;
+    track.appendChild(champStep);
+  }
+
+  /* ===== RENDER: SCORES PAGE ===== */
+  function renderScoresPage(){
+    const container = document.getElementById('scoresContainer');
+    container.innerHTML = '';
+    ROUND_DEFS.forEach((def, r) => {
+      const block = document.createElement('div');
+      block.className = 'round-block';
+      block.innerHTML = `<div class="round-block-head"><h3><i class="fa-solid ${def.icon}"></i>${def.label}</h3><span>${def.sub}</span></div>`;
+      const list = document.createElement('div');
+      for(let m=0; m<def.matches; m++){
+        list.appendChild(renderMatchCard(r, m));
+      }
+      block.appendChild(list);
+      container.appendChild(block);
+    });
+  }
+
+  function renderMatchCard(r, m){
+    const teamA = getTeamForSlot(r, m, 0);
+    const teamB = getTeamForSlot(r, m, 1);
+    const match = state.rounds[r].matches[m];
+    const playable = isMatchPlayable(r, m);
+    const winnerSlot = playable ? getMatchWinnerSlot(r, m) : null;
+    const completed = winnerSlot !== null;
+
+    const card = document.createElement('div');
+    card.className = 'bracket-match' + (playable ? '' : ' disabled') + (completed ? ' completed' : '');
+
+    const s1 = match.s1 === null ? '' : match.s1;
+    const s2 = match.s2 === null ? '' : match.s2;
+
+    card.innerHTML = `
+      <div class="bm-team ${!teamA.ready ? 'tbd' : ''} ${completed && winnerSlot===0 ? 'winner' : ''}">
+        <span class="bm-name">${escapeHtml(teamA.name)}</span>
+        <span class="bm-score">${s1 !== '' ? s1 : (teamA.ready ? '-' : '')}</span>
+      </div>
+      <div class="bm-team ${!teamB.ready ? 'tbd' : ''} ${completed && winnerSlot===1 ? 'winner' : ''}">
+        <span class="bm-name">${escapeHtml(teamB.name)}</span>
+        <span class="bm-score">${s2 !== '' ? s2 : (teamB.ready ? '-' : '')}</span>
+      </div>
+    `;
+
+    if(playable){
+      card.addEventListener('click', () => openScoreModal(r, m));
+    } else {
+      card.addEventListener('click', () => showToast('Peserta belum ditentukan — selesaikan babak sebelumnya dahulu'));
+    }
+    return card;
+  }
+
+  /* ===== RENDER: PARTICIPANTS PAGE ===== */
+  function renderParticipantsPage(){
+    const list = document.getElementById('participantsList');
+    list.innerHTML = '';
+    state.teams.forEach((name, idx) => {
+      const row = document.createElement('div');
+      row.className = 'participant-row';
+      row.innerHTML = `
+        <span class="pnum mono">${pad(idx+1)}</span>
+        <input type="text" data-idx="${idx}" value="${escapeHtml(name)}" maxlength="24" placeholder="TEAM ${pad(idx+1)}">
+      `;
+      list.appendChild(row);
+    });
+  }
+
+  document.getElementById('pSaveBtn').addEventListener('click', () => {
+    const inputs = document.querySelectorAll('#participantsList input[data-idx]');
+    inputs.forEach(inp => {
+      const idx = Number(inp.getAttribute('data-idx'));
+      const val = inp.value.trim();
+      state.teams[idx] = val === '' ? ('TEAM ' + pad(idx+1)) : val;
+    });
+    saveState();
+    renderEverything();
+    showToast('Nama peserta tersimpan');
   });
 
-  alert(
-    "Tournament berhasil dibuat dengan " +
-    teams.length +
-    " tim!"
-  );
+  /* ===== RENDER: HOME SPONSOR BANNER ===== */
+  function renderHomeSponsors(){
+    const strip = document.getElementById('homeSponsorStrip');
+    strip.innerHTML = '';
+    state.sponsors.forEach(sp => {
+      const badge = document.createElement('div');
+      badge.className = 'sponsor-badge';
+      badge.innerHTML = `
+        <div class="sb-icon">${sp.photo ? `<img src="${sp.photo}" alt="${escapeHtml(sp.name)}">` : `<i class="fa-solid fa-star"></i>`}</div>
+        <div class="sb-name">${escapeHtml(sp.name)}</div>
+      `;
+      strip.appendChild(badge);
+    });
+  }
 
-}
+  /* ===== RENDER: SPONSORS PAGE ===== */
+  function renderSponsorsPage(){
+    const grid = document.getElementById('sponsorsGrid');
+    grid.innerHTML = '';
+    state.sponsors.forEach((sp, idx) => {
+      const card = document.createElement('div');
+      card.className = 'people-card';
+      card.innerHTML = `
+        <div class="avatar" data-kind="sponsor" data-idx="${idx}">
+          ${sp.photo ? `<img src="${sp.photo}" alt="${escapeHtml(sp.name)}">` : `<i class="fa-solid fa-image avatar-icon"></i>`}
+          <span class="avatar-edit"><i class="fa-solid fa-plus"></i></span>
+        </div>
+        <div class="pname">${escapeHtml(sp.name)}</div>
+      `;
+      grid.appendChild(card);
+    });
+  }
 
-function selectWinner(element) {
+  /* ===== RENDER: COMMITTEE PAGE ===== */
+  function renderCommitteePage(){
+    const grid = document.getElementById('committeeGrid');
+    grid.innerHTML = '';
+    state.committee.forEach((p, idx) => {
+      const card = document.createElement('div');
+      card.className = 'people-card';
+      card.innerHTML = `
+        <div class="remove-btn" data-kind="committee-remove" data-idx="${idx}"><i class="fa-solid fa-xmark"></i></div>
+        <div class="avatar" data-kind="committee" data-idx="${idx}">
+          ${p.photo ? `<img src="${p.photo}" alt="${escapeHtml(p.name || p.role)}">` : `<i class="fa-solid fa-user avatar-icon"></i>`}
+          <span class="avatar-edit"><i class="fa-solid fa-plus"></i></span>
+        </div>
+        <input class="name-edit" data-kind="committee-name" data-idx="${idx}" type="text" value="${escapeHtml(p.name)}" placeholder="Nama Pengurus" maxlength="30">
+        <div class="prole">${escapeHtml(p.role)}</div>
+      `;
+      grid.appendChild(card);
+    });
+    const addBtn = document.createElement('div');
+    addBtn.className = 'add-person-btn';
+    addBtn.id = 'addCommitteeBtn';
+    addBtn.innerHTML = `<span class="qi"><i class="fa-solid fa-user-plus"></i></span><span>Tambah Pengurus</span>`;
+    grid.appendChild(addBtn);
+    addBtn.addEventListener('click', () => {
+      state.committee.push({ name:'', role:'Pengurus', photo:null });
+      saveState();
+      renderCommitteePage();
+      bindDynamicEvents();
+    });
+  }
 
-  const match = element.parentElement;
+  function bindDynamicEvents(){
+    document.querySelectorAll('.avatar[data-kind="sponsor"], .avatar[data-kind="committee"]').forEach(av => {
+      av.addEventListener('click', () => {
+        pendingPhotoTarget = { kind: av.getAttribute('data-kind'), idx: Number(av.getAttribute('data-idx')) };
+        document.getElementById('photoFileInput').click();
+      });
+    });
+    document.querySelectorAll('input[data-kind="committee-name"]').forEach(inp => {
+      inp.addEventListener('change', () => {
+        const idx = Number(inp.getAttribute('data-idx'));
+        state.committee[idx].name = inp.value.trim();
+        saveState();
+      });
+    });
+    document.querySelectorAll('[data-kind="committee-remove"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.getAttribute('data-idx'));
+        state.committee.splice(idx, 1);
+        saveState();
+        renderCommitteePage();
+        bindDynamicEvents();
+      });
+    });
+  }
 
-  const players = match.querySelectorAll(".player");
+  /* ===== PHOTO UPLOAD (resize via canvas, store as dataURL) ===== */
+  let pendingPhotoTarget = null;
+  document.getElementById('photoFileInput').addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if(!file || !pendingPhotoTarget) return;
+    const target = pendingPhotoTarget;
+    pendingPhotoTarget = null;
 
-  players.forEach(player => {
-    player.classList.remove("winner");
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      const img = new Image();
+      img.onload = function(){
+        const maxDim = 240;
+        let w = img.width, h = img.height;
+        if(w > h){ if(w > maxDim){ h = Math.round(h * maxDim / w); w = maxDim; } }
+        else { if(h > maxDim){ w = Math.round(w * maxDim / h); h = maxDim; } }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+
+        if(target.kind === 'sponsor'){
+          state.sponsors[target.idx].photo = dataUrl;
+          saveState();
+          renderSponsorsPage();
+          bindDynamicEvents();
+        } else if(target.kind === 'committee'){
+          state.committee[target.idx].photo = dataUrl;
+          saveState();
+          renderCommitteePage();
+          bindDynamicEvents();
+        }
+        showToast('Foto tersimpan');
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
   });
 
-  element.classList.add("winner");
+  /* ===== RENDER: CHAMPION & HOME STATUS ===== */
+  function renderChampionPage(){
+    const champ = getChampionName();
+    document.getElementById('championName').textContent = champ ? champ : '—';
+    document.getElementById('championEmptyNote').style.display = champ ? 'none' : 'block';
+  }
+  function renderHomeStatus(){
+    const champ = getChampionName();
+    document.getElementById('homeChampionStatus').textContent = champ ? champ : 'Belum ditentukan';
+  }
 
-}
+  function renderEverything(){
+    renderScoresPage();
+    renderParticipantsPage();
+    renderChampionPage();
+    renderHomeStatus();
+    renderTracker();
+    renderHomeSponsors();
+    renderSponsorsPage();
+    renderCommitteePage();
+    bindDynamicEvents();
+  }
 
+  /* ===== SCORE MODAL ===== */
+  let activeRound = null, activeMatch = null;
+  const scoreModal = document.getElementById('scoreModal');
+  const scModalRound = document.getElementById('scModalRound');
+  const scModalMatchLabel = document.getElementById('scModalMatchLabel');
+  const scLabel1 = document.getElementById('scLabel1');
+  const scLabel2 = document.getElementById('scLabel2');
+  const scInput1 = document.getElementById('scInput1');
+  const scInput2 = document.getElementById('scInput2');
+
+  function openScoreModal(r, m){
+    const teamA = getTeamForSlot(r, m, 0);
+    const teamB = getTeamForSlot(r, m, 1);
+    const match = state.rounds[r].matches[m];
+
+    activeRound = r; activeMatch = m;
+    scModalRound.textContent = ROUND_DEFS[r].label.toUpperCase();
+    scModalMatchLabel.textContent = `${teamA.name} vs ${teamB.name}`;
+    scLabel1.textContent = teamA.name;
+    scLabel2.textContent = teamB.name;
+    scInput1.value = match.s1 !== null ? match.s1 : '';
+    scInput2.value = match.s2 !== null ? match.s2 : '';
+
+    scoreModal.classList.add('open');
+    setTimeout(() => scInput1.focus(), 150);
+  }
+  function closeScoreModal(){
+    scoreModal.classList.remove('open');
+    activeRound = null; activeMatch = null;
+  }
+  document.getElementById('scCancel').addEventListener('click', closeScoreModal);
+  scoreModal.addEventListener('click', (e) => { if(e.target === scoreModal) closeScoreModal(); });
+
+  document.getElementById('scSave').addEventListener('click', () => {
+    if(activeRound === null) return;
+    const v1 = scInput1.value.trim();
+    const v2 = scInput2.value.trim();
+    if(v1 === '' || v2 === ''){ showToast('Isi kedua skor terlebih dahulu'); return; }
+    const n1 = Number(v1), n2 = Number(v2);
+    if(isNaN(n1) || isNaN(n2) || n1 < 0 || n2 < 0 || n1 > 2 || n2 > 2){
+      showToast('Skor harus antara 0 - 2 (Race to 2)'); return;
+    }
+    if(Math.max(n1,n2) !== 2 || n1 === n2){
+      showToast('Skor belum valid — salah satu tim harus mencapai 2 untuk menang'); return;
+    }
+    const match = state.rounds[activeRound].matches[activeMatch];
+    match.s1 = n1; match.s2 = n2;
+    cascadeReset(activeRound, activeMatch);
+    saveState();
+    renderEverything();
+    closeScoreModal();
+    showToast('Hasil pertandingan tersimpan');
+  });
+
+  /* ===== LIGHTBOX (bracket image zoom) ===== */
+  const lightbox = document.getElementById('lightbox');
+  document.getElementById('bracketImgWrap').addEventListener('click', () => lightbox.classList.add('open'));
+  document.getElementById('lightboxClose').addEventListener('click', () => lightbox.classList.remove('open'));
+  lightbox.addEventListener('click', (e) => { if(e.target === lightbox) lightbox.classList.remove('open'); });
+
+  /* ===== TOAST ===== */
+  let toastTimer = null;
+  function showToast(msg){
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+  }
+
+  /* ===== RESET ===== */
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    const ok = window.confirm('Reset seluruh turnamen? Semua hasil pertandingan, nama peserta, foto sponsor, dan data pengurus akan dikembalikan ke awal. Tindakan ini tidak bisa dibatalkan.');
+    if(!ok) return;
+    state = buildDefaultState();
+    saveState();
+    renderEverything();
+    showToast('Turnamen berhasil di-reset');
+  });
+
+  /* ===== PAGE NAVIGATION ===== */
+  function goToPage(pageName){
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + pageName).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-page') === pageName));
+    window.scrollTo({ top:0, behavior:'instant' });
+    closeDrawer();
+  }
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => goToPage(btn.getAttribute('data-page')));
+  });
+  document.querySelectorAll('.quick-card').forEach(card => {
+    card.addEventListener('click', () => goToPage(card.getAttribute('data-goto')));
+  });
+  document.querySelectorAll('.drawer-item[data-goto]').forEach(item => {
+    item.addEventListener('click', () => goToPage(item.getAttribute('data-goto')));
+  });
+  document.querySelectorAll('.hsh-link[data-goto]').forEach(link => {
+    link.addEventListener('click', () => goToPage(link.getAttribute('data-goto')));
+  });
+
+  /* ===== INFO MODALS (Hadiah Pemenang / Race Off) ===== */
+  function openInfoModal(id){ document.getElementById(id).classList.add('open'); }
+  function closeInfoModal(id){ document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('[data-modal]').forEach(el => {
+    el.addEventListener('click', () => {
+      openInfoModal(el.getAttribute('data-modal'));
+      closeDrawer();
+    });
+  });
+  document.querySelectorAll('[data-close-modal]').forEach(btn => {
+    btn.addEventListener('click', () => closeInfoModal(btn.getAttribute('data-close-modal')));
+  });
+  ['prizeModal','raceoffModal'].forEach(id => {
+    const overlay = document.getElementById(id);
+    overlay.addEventListener('click', (e) => { if(e.target === overlay) closeInfoModal(id); });
+  });
+
+  /* ===== BURGER DRAWER TOGGLE ===== */
+  const drawer = document.getElementById('drawer');
+  const drawerOverlay = document.getElementById('drawerOverlay');
+  function openDrawer(){ drawer.classList.add('open'); drawerOverlay.classList.add('open'); }
+  function closeDrawer(){ drawer.classList.remove('open'); drawerOverlay.classList.remove('open'); }
+  document.getElementById('burgerBtn').addEventListener('click', openDrawer);
+  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+  drawerOverlay.addEventListener('click', closeDrawer);
+
+  /* ===== INIT ===== */
+  renderEverything();
+})();
 </script>
-
 </body>
 </html>
